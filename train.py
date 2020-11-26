@@ -45,14 +45,14 @@ class Env():
 	def render(self):
 		self.env.render()
 
-	def step(self, action, time_step):
-		obs, reward, done, _ = self.env.step(action)
+	def step(self, action, lives):
+		obs, reward, done, info = self.env.step(action)
 		reward_new = reward
-		if done:
-			reward_new -= 20
-		elif reward_new == 0:
-			reward_new = -(time_step/500)
-		return obs, reward_new, done, reward
+		reward_new = -2 if reward_new == 0 else reward_new
+		reward_new = -20 if lives > info['ale.lives'] else reward_new
+		reward_new = reward_new if not done else -20
+		lives = info['ale.lives']
+		return obs, reward_new, done, reward, lives
 
 class Agent():
 	def __init__(self, global_step, args, network, scope):
@@ -251,6 +251,7 @@ if __name__=='__main__':
 			for eposide in range(args.num_eposides):
 				print('Eposide: {}'.format(eposide))
 				total_reward = 0
+				lives = 0
 				frame_pre1 = np.zeros((args.width, args.height, 1))
 				frame_pre2 = np.zeros((args.width, args.height, 1))
 				state = env.reset()
@@ -262,7 +263,7 @@ if __name__=='__main__':
 					if args.render:
 						env.render()
 					action = agent.select_action(model_input[np.newaxis,:,:,:])
-					state_, reward, done, reward_orig = env.step(action, time_step)
+					state_, reward, done, reward_orig, lives = env.step(action, lives)
 					total_reward += reward_orig
 					frame_pre1 = frame_pre2[:]
 					frame_pre2 = frame_now[:]
