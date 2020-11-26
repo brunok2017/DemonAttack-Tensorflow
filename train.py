@@ -18,7 +18,7 @@ def setup_options():
 	parser.add_argument('--width', type=int, default=84, help="input width")
 	parser.add_argument('--height', type=int, default=84, help="input height")
 	parser.add_argument('--num_stack', type=int, default=3, help="frames stack")
-	parser.add_argument('--hit_ratio', type=float, default=0.2, help="ratio of hit state in memory")		
+	parser.add_argument('--hit_ratio', type=float, default=0.1, help="ratio of hit state in memory")		
 	parser.add_argument('--memory_capacity', type=int, default=2000, help="memory capacity")
 	parser.add_argument('--num_step', type=int, default=5000, help="time step of a eposide")
 	parser.add_argument('--num_eposides', type=int, default=99999, help="number of eposide")
@@ -63,7 +63,7 @@ class Agent():
 		self.batch_size = args.batch_size
 		self.memory_counter = 0
 		self.epsilon_min = 0.01
-		self.epsilon_decay = 0.995
+		self.epsilon_decay = 0.99
 		self.epsilon = tf.get_variable(name=self.scope+'_epsilon', dtype=tf.float32, initializer=tf.constant_initializer(0.95), shape=1)
 		self.epsilon_step = self.epsilon.assign(self.epsilon * self.epsilon_decay)
 		self.start_epoch = tf.get_variable(name=self.scope+'_start_epoch', dtype=tf.int32, initializer=tf.constant_initializer(0), shape=1)
@@ -129,9 +129,9 @@ class Agent():
 	def load_model(self):
 		checkpoint_prefix = os.path.join(self.ckpt_dir ,"checkpoint")
 		if os.path.exists(checkpoint_prefix+"-latest"):
-			print("Last checkpoint epoch {}".format(self.start_epoch.eval()[0]))
 			latest_checkpoint_path = tf.train.latest_checkpoint(self.ckpt_dir,latest_filename="checkpoint-latest")
 			self.saver.restore(self.sess, latest_checkpoint_path)
+			print("Last checkpoint epoch {}".format(self.start_epoch.eval()[0]))
 
 
 	def save_model(self):

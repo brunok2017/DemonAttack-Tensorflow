@@ -20,8 +20,8 @@ def processed_state(state, width, length):
 
 if __name__=='__main__':
 	parser = argparse.ArgumentParser(description='test options')
-	parser.add_argument("--model_path", type=str, default='./tmp/ckpt/checkpoint-5518.meta')
-	parser.add_argument("--ckpt_path", type=str, default='./tmp/ckpt/checkpoint-5518')
+	parser.add_argument("--model_path", type=str, default='./tmp/ckpt/checkpoint-124.meta')
+	parser.add_argument("--ckpt_path", type=str, default='./tmp/ckpt/checkpoint-124')
 	parser.add_argument('--width', type=int, default=84, help="input width")
 	parser.add_argument('--height', type=int, default=84, help="input height")
 	args = parser.parse_args()
